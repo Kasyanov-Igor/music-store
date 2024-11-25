@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using music_store.Models.Domains;
 using music_store.Models.Entities;
 using music_store.Services.Interfaces;
 
@@ -9,9 +11,11 @@ namespace music_store.Services
 	{
 		private ADatabaseConnection _databaseConnection;
 
+		IFactoryMapper<DUser, User> factoryMapper;
 		public UserService(ADatabaseConnection aDatabaseConnection)
 		{
 			this._databaseConnection = aDatabaseConnection;
+			factoryMapper = new FactoryMapper<DUser,User>();
 		}
 
 		public bool AddUser(User user)
@@ -40,7 +44,7 @@ namespace music_store.Services
 		{
 			try
 			{
-				return this._databaseConnection.Users.Where(usr => 
+				return this._databaseConnection.Users.Where(usr =>
 				usr.Login == user.Login &&
 				usr.Password == user.Password).FirstOrDefault();
 			}
@@ -62,6 +66,33 @@ namespace music_store.Services
 				{
 					this._databaseConnection.Users.Remove(findedUser);
 					this._databaseConnection.SaveChanges();
+
+					return true;
+				}
+			}
+			catch (Exception exception)
+			{
+				Console.WriteLine(exception.ToString());
+			}
+
+			return false;
+		}
+
+		public bool BuyVinylRecord(User user, VinylRecord vinylRecord)
+		{
+			DUser dUser = factoryMapper.AddDomain(user);
+
+			try
+			{
+				if (dUser.Balance >= vinylRecord.CostPrice)
+				{
+					dUser.Balance -= vinylRecord.CostPrice;
+
+
+					this._databaseConnection.PurchaseHistories.Add(new PurchaseHistory() { User = user, VinylRecord = vinylRecord,  DateTime = DateTime.Now });
+					this._databaseConnection.SaveChanges();
+
+					//PurchasedRecords purchased = factoryMapper.AddDomain(this._databaseConnection.PurchaseHistories.FirstOrDefault());
 
 					return true;
 				}

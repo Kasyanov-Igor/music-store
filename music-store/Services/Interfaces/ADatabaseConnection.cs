@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using music_store.Models.Domains;
 using music_store.Models.Entities;
 
 namespace music_store.Services.Interfaces
@@ -18,6 +19,8 @@ namespace music_store.Services.Interfaces
 		public DbSet<MusicGenre> MusicGenres => Set<MusicGenre>();
 
 		public DbSet<User> Users => Set<User>();
+
+		public DbSet<PurchaseHistory> PurchaseHistories => Set<PurchaseHistory>();
 
 		public ADatabaseConnection()
 		{
