@@ -12,11 +12,11 @@ namespace music_store.Services
 	{
 		private ADatabaseConnection _databaseConnection;
 
-		IFactoryMapper<DUser, User> factoryMapper;
+		IFactoryMapper factoryMapper;
 		public UserService(ADatabaseConnection aDatabaseConnection)
 		{
 			this._databaseConnection = aDatabaseConnection;
-			factoryMapper = new FactoryMapper<DUser, User>();
+			factoryMapper = new FactoryMapper();
 		}
 
 		public bool AddUser(User user)
@@ -87,7 +87,8 @@ namespace music_store.Services
 		*/
 		public bool BuyVinylRecord(User user, VinylRecord vinylRecord)
 		{
-			DUser dUser = factoryMapper.AddDomain(user); //!< Data entry into the domain model.
+			DTOUser dUser;
+				factoryMapper.AddDomain(); //!< Data entry into the domain model.
 
 			try
 			{
@@ -95,8 +96,12 @@ namespace music_store.Services
 				{
 					dUser.Wallet.BalanceUser -= vinylRecord.CostPrice; //!< Write - off of funds from the balance.
 
-					this._databaseConnection.PurchaseHistories.Add(new PurchaseHistory() { User = user, VinylRecord = vinylRecord, DateTime = DateTime.Now });
+					PurchaseHistory history = new PurchaseHistory() { User = user, VinylRecord = vinylRecord, DatePurchase = DateTime.Now };
+
+					this._databaseConnection.PurchaseHistories.Add(history);
 					this._databaseConnection.SaveChanges();
+
+					PurchasedRecords records = factoryMapper.AddDomain(history);
 
 					return true;
 				}

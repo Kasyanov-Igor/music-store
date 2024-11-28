@@ -1,6 +1,6 @@
 ﻿namespace music_store.Models.Entities
 {
-	public class Balance
+	public class Wallet
 	{
 		public int Id { get; set; }
 

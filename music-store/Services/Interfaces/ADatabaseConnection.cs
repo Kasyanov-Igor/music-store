@@ -19,7 +19,7 @@ namespace music_store.Services.Interfaces
 
 		public DbSet<User> Users => Set<User>();
 
-		public DbSet<Balance> Balances => Set<Balance>();
+		public DbSet<Wallet> Balances => Set<Wallet>();
 
 		public DbSet<PurchaseHistory> PurchaseHistories => Set<PurchaseHistory>();
 

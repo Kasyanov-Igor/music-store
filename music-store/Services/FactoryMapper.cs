@@ -2,16 +2,15 @@
 
 namespace music_store.Services
 {
-	public class FactoryMapper<T, N> : IFactoryMapper<T, N>
+	public class FactoryMapper : IFactoryMapper
 	{
-		private MapperConfigUser mapperConfig;
+		private MapperConfig mapperConfig;
 
-		public FactoryMapper() => mapperConfig = new MapperConfigUser();
+		public FactoryMapper() => mapperConfig = new MapperConfig();
 
-		public T AddDomain(N entity)
+		public void AddDomain()
 		{
-			return mapperConfig.CreateMapper().Map<T>(entity);
+			mapperConfig.CreateMapper();
 		}
-
 	}
 }

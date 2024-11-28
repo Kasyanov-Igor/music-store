@@ -2,11 +2,11 @@
 
 namespace music_store.Models.Domains
 {
-	public class DUser
+	public class DTOUser
 	{
 		public string Login { get; set; } = null!;
 
-		public Balance Wallet { get; set; } = null!;
+		public Wallet Wallet { get; set; } = null!;
 
 	}
 }

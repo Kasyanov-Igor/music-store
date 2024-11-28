@@ -1,8 +1,7 @@
 ﻿namespace music_store.Services.Interfaces
 {
-	public interface IFactoryMapper<T, N>
+	public interface IFactoryMapper
 	{
-
-		public T AddDomain(N entity);
+		public MapperConfig GetMapperConfig();
 	}
 }
