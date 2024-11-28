@@ -1,7 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using music_store.Models.Domains;
 using music_store.Models.Entities;
 using music_store.Services.Interfaces;
@@ -12,11 +10,11 @@ namespace music_store.Services
 	{
 		private ADatabaseConnection _databaseConnection;
 
-		IFactoryMapper factoryMapper;
-		public UserService(ADatabaseConnection aDatabaseConnection)
+		private IFactoryMapper _factoryMapper;
+		public UserService(ADatabaseConnection aDatabaseConnection, IFactoryMapper factoryMapper)
 		{
 			this._databaseConnection = aDatabaseConnection;
-			factoryMapper = new FactoryMapper();
+			this._factoryMapper = factoryMapper;
 		}
 
 		public bool AddUser(User user)
@@ -87,21 +85,20 @@ namespace music_store.Services
 		*/
 		public bool BuyVinylRecord(User user, VinylRecord vinylRecord)
 		{
-			DTOUser dUser;
-				factoryMapper.AddDomain(); //!< Data entry into the domain model.
+			DTOUser DomainsUser = this._factoryMapper.GetMapperConfig().CreateMapper().Map<DTOUser>(user);  //!< Data entry into the domain model.
 
 			try
 			{
-				if (dUser.Wallet.BalanceUser >= vinylRecord.CostPrice)
+				if (DomainsUser.Wallet.BalanceUser >= vinylRecord.CostPrice)
 				{
-					dUser.Wallet.BalanceUser -= vinylRecord.CostPrice; //!< Write - off of funds from the balance.
+					DomainsUser.Wallet.BalanceUser -= vinylRecord.CostPrice; //!< Write - off of funds from the balance.
 
 					PurchaseHistory history = new PurchaseHistory() { User = user, VinylRecord = vinylRecord, DatePurchase = DateTime.Now };
 
+					PurchasedRecords records = this._factoryMapper.GetMapperConfig().CreateMapper().Map<PurchasedRecords>(history);  //!< Data entry into the domain model.
+
 					this._databaseConnection.PurchaseHistories.Add(history);
 					this._databaseConnection.SaveChanges();
-
-					PurchasedRecords records = factoryMapper.AddDomain(history);
 
 					return true;
 				}

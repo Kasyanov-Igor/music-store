@@ -1,8 +1,7 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using music_store.Models.Domains;
 using music_store.Models.Entities;
-using music_store.Services.Interfaces;
-using System;
 
 namespace music_store.Services
 {
@@ -13,6 +12,9 @@ namespace music_store.Services
 			throw new NotImplementedException();
 		}
 
+		/*! 
+		* @brief Create map Mapper by field.
+		*/
 		public MapperConfig()
 		{
 			CreateMap<User, DTOUser>().ForMember(dest => dest.Login, act => act.MapFrom(src => src.Login));

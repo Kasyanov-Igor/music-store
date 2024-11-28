@@ -8,9 +8,9 @@ namespace music_store.Services
 
 		public FactoryMapper() => mapperConfig = new MapperConfig();
 
-		public void AddDomain()
-		{
-			mapperConfig.CreateMapper();
+		public MapperConfig GetMapperConfig()
+		{ 
+			return mapperConfig;
 		}
 	}
 }
